@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/13 16:20:31 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/18 23:17:41 by ecunniet         ###   ########.fr       */
+/*   Updated: 2016/12/19 19:58:44 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,19 @@
 void		ft_verif_x(char **point, int xmax)
 {
 	int x;
+	int i;
 
+	i = 0;
 	x = 0;
 	if (point == NULL)
 		ft_error(2, 0);
 	while (point[x])
 		x++;
+	while (point[i])
+	{
+		free(point[i]);
+		i++;
+	}	
 	if (xmax == -1)
 		xmax = x;
 	else
@@ -43,5 +50,7 @@ void		ft_error(int i, char str);
 		ft_putstr("No data found.\n");
 	if (i == 3)
 		ft_putstr("Found wrong line length. Exiting.\n");
+	if (i == 4)
+		ft_putstr("Fail to close file\n");
 	exit(EXIT_FAILURE);
 }

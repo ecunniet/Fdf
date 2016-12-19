@@ -6,27 +6,12 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 00:20:03 by ecunniet         ###   ########.fr       */
+/*   Updated: 2016/12/19 19:59:29 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "mlx.h"
+#include "fdf.h"
 #include <stdio.h>
-
-typedef struct		s_mlx
-{
-	void	*mlx;
-	void	*win;
-}					t_mlx;
-
-typedef	struct		s_address
-{
-	int					x;
-	int					y;
-	int					z;
-	struct s_address	*next;
-}					t_adress;
 
 //compilation: cc -o mlx main.c -lmlx -framework OpenGL -framework AppKit
 
@@ -62,48 +47,51 @@ int	main(void)
 
 //////////////////////////////////////////////////////
 
-t_address	*ft_location(char **point, int y)
+t_address	*ft_location(char **point, int y, int xmax)
 {	
-	t_address	*tmp;
 	t_address	*pix;
 	int			x;
 
+	if (!(pix = (t_address*)malloc(sizeof(t_address))))
+		return (NULL);
+	if (!(pix->x = (int*)malloc(sizeof(int) * (xmax))))
+		return (NULL);
+	if (!(pix->z = (int*)malloc(sizeof(int) * (xmax))))
+		return (NULL);
 	x = 0;
+	pix->y = y;
 	while (point[x])
 	{
 		pix->x = x;
-		pix->y = y;
 		pix->z = ft_atoi(point[x]);
-		if ()
-		*pix = pix->next;
+		pix->next = NULL;
 		x++;
 	}
 }
 
 int		ft_get_pix(char *filename)
 {
-	int			fd;
-	char		*line;
-	char		**point;
-	int			y;
-	int			xmax;
-	t_address	*list;
+	int		fd;
+	t_env	list;
 
-	xmax = -1;
-	y = 0;
+	list.xmax = -1;
+	list.ymax = 0;
 	if ((fd = open(filename, O_RDONLY)))
 	{
-		while (get_next_line(fd, &line))
+		while (get_next_line(fd, &list.line))
 		{
-			y++;
-			point = ft_strsplit(line, ' ');
-			xmax = ft_verif_x(point, xmax);
-			list = (y == 0) ? ft_location(point, y)
-			: ft_lstaddend(&list, ft_location(point, y));
+			list.ymax++;
+			list.xmax = ft_verif_x(ft_strsplit(list.line, ' '), list.xmax);
+			free(line);
 		}
+		if (close(fd) == 0)
+			if ((fd = open(filename, O_RDONLY)))
+				ft_location(fd, &list.line, xmax, ymax);
+		else
+			ft_error(4, 0);
 	}
 	else
-		ft_erreur(1, argv[1]);
+		ft_error(1, argv[1]);
 	return(0);
 }
 
