@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.h                                              :+:      :+:    :+:   */
+/*   ft_ptrchardel.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 22:11:47 by ecunniet         ###   ########.fr       */
+/*   Created: 2016/12/19 21:38:31 by ecunniet          #+#    #+#             */
+/*   Updated: 2016/12/19 21:44:40 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FDF_H
-# define FDF_H
-# include "libft.h"
-# include "mlx.h"
+#include "libft.h"
 
-typedef struct		s_env
+void	ft_ptrchardel(char ***ptr, int size)
 {
-	void	*mlx;
-	void	*win;
-	char	*line;
-	int		*x;
-	int		*y;
-	int		*z;
-	int		xmax;
-	int		ymax;
-}					t_env;
+	int i;
 
-#endif
+	i = 0;
+	while (i < size)
+	{
+		free((*ptr)[i]);
+		i++;
+	}
+	free(*ptr);
+	ptr = NULL;
+}

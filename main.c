@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 19:59:29 by ecunniet         ###   ########.fr       */
+/*   Updated: 2016/12/19 22:11:44 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int		my_key_funct(int keycode, t_mix *e/*structure avec plusieurs param?*/)
 	return (0);
 }
 
-int	main(void)
+int		ft_draw_pix(t_env *list)
 {
 	t_mlx	e;
 	int		x;
@@ -47,58 +47,75 @@ int	main(void)
 
 //////////////////////////////////////////////////////
 
-t_address	*ft_location(char **point, int y, int xmax)
-{	
-	t_address	*pix;
-	int			x;
+void	ft_location(int fd, t_env *list)
+{
+	int		y;
+	int		x;
+	int		i;
+	char	**point;
 
-	if (!(pix = (t_address*)malloc(sizeof(t_address))))
-		return (NULL);
-	if (!(pix->x = (int*)malloc(sizeof(int) * (xmax))))
-		return (NULL);
-	if (!(pix->z = (int*)malloc(sizeof(int) * (xmax))))
-		return (NULL);
+	i = 0;
+	y = 0;
 	x = 0;
-	pix->y = y;
-	while (point[x])
+	if (!(list->y = (int*)malloc(sizeof(int) * (xmax * ymax))))
+		return (NULL);
+	if (!(list->x = (int*)malloc(sizeof(int) * (xmax * ymax))))
+		return (NULL);
+	if (!(list->z = (int*)malloc(sizeof(int) * (xmax * ymax))))
+		return (NULL);
+	while (get_next_line(fd, &list->line))
 	{
-		pix->x = x;
-		pix->z = ft_atoi(point[x]);
-		pix->next = NULL;
-		x++;
+		point = ft_strsplit(list->line, ' ');
+		while (x < xmax)
+		{
+			list->(*y + i) = y;
+			list->(*x + i) = x;
+			list->(*z +	i) = ft_atoi(point[x]);
+			x++;
+			i++;
+		}
+		x = 0;
+		free(list->line);
+		ft_ptrchardel(&point, xmax);
+		y++;
 	}
 }
 
-int		ft_get_pix(char *filename)
+void	ft_get_pix(char *filename, t_env *list)
 {
 	int		fd;
-	t_env	list;
 
-	list.xmax = -1;
-	list.ymax = 0;
+	list->xmax = -1;
+	list->ymax = 0;
 	if ((fd = open(filename, O_RDONLY)))
 	{
-		while (get_next_line(fd, &list.line))
+		while (get_next_line(fd, &list->line))
 		{
-			list.ymax++;
-			list.xmax = ft_verif_x(ft_strsplit(list.line, ' '), list.xmax);
-			free(line);
+			list->xmax = ft_verif_x(ft_strsplit(list->line, ' '), list->xmax);
+			free(list->line);
+			list->ymax++;
 		}
 		if (close(fd) == 0)
 			if ((fd = open(filename, O_RDONLY)))
-				ft_location(fd, &list.line, xmax, ymax);
+			{
+				ft_location(fd, list);
+				if (close(fd) == -1)
+					ft_error(4, 0);
+			}
 		else
 			ft_error(4, 0);
 	}
 	else
 		ft_error(1, argv[1]);
-	return(0);
 }
 
 int		main(int argc, char **argv)
 {
+	t_env	list;
+
 	if (argc == 2)
-		ft_get_pix(argv[1]);
+		ft_get_pix(argv[1], &list);
+		ft_draw_pix(&list);
 	else
 		ft_error(0, 0);
 	return (0);
