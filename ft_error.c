@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-void		ft_verif_x(char **point, int xmax)
+int		ft_verif_x(char **point, int xmax)
 {
 	int x;
 	int i;
@@ -36,7 +36,7 @@ void		ft_verif_x(char **point, int xmax)
 	return (xmax);
 }	
 
-void		ft_error(int i, char str);
+void		ft_error(int i, char *str);
 {
 	if (i == 0)
 		ft_putstr("Usage: ./fdf <filename> [ case_size z_size ]\n");

@@ -12,8 +12,11 @@
 
 #ifndef FDF_H
 # define FDF_H
-# include "libft.h"
-# include "mlx.h"
+# include "libft/libft.h"
+# include "minilibx/mlx.h"
+
+int	ft_verif_x(char **point, int xmax);
+void	ft_error(int i, char *str);
 
 typedef struct		s_env
 {
