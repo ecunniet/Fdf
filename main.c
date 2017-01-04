@@ -6,12 +6,13 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 22:11:44 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/04 19:32:07 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include <stdio.h>
+#include <unistd.h>
 
 //compilation: cc -o mlx main.c -lmlx -framework OpenGL -framework AppKit
 /*
@@ -24,16 +25,18 @@ int		my_key_funct(int keycode, t_mix e structure avec plusieurs param?)
 
 int		ft_draw_pix(t_env *list)
 {
-	int i;
+	t_img	img;
 
-	i = 0;
+	img.width = 100;
+	img.height = 100;
+	ft_putendl("Hey");
 	list->mlx = mlx_init();
-	list->win = mlx_new_window(list->mlx, 400, 400, "mlx_42");
-	while (i < list->xmax)
-	{
-		mlx_pixel_put(list->mlx, list->win, *(list->x + i) , *(list->y + i), 0x00FFFFFF);
-		i++;
-	}
+	list->win = mlx_new_window(list->mlx, 150, 150, "mlx_42");
+	ft_putendl("fenetre");
+	img.img_ptr = mlx_new_image(list->mlx, img.width, img.height);
+	img.addr_img = mlx_get_data_addr(img.img_ptr, img.bits_pp, img.size_line, img.endian);
+	*(img.addr_img + 1) = 255;
+	mlx_put_image_to_window(list->mlx, list->win, img.img_ptr, 25, 25);
 //	mlx_key_hook(e.win, my_key_funct, &e);
 	mlx_loop(list->mlx);
 	return (0);
@@ -51,28 +54,27 @@ void	ft_location(int fd, t_env *list)
 	i = 0;
 	y = 0;
 	x = 0;
-	if (!(list->y = (int*)malloc(sizeof(int) * (list->xmax * list->ymax))))
+	if (!(list->p = (t_point*)malloc(sizeof(t_point) * (list->ymax * list->xmax))))
 		return ;
-	if (!(list->x = (int*)malloc(sizeof(int) * (list->xmax * list->ymax))))
-		return ;
-	if (!(list->z = (int*)malloc(sizeof(int) * (list->xmax * list->ymax))))
-		return ;
+	ft_putendl("la c'est ok?");
 	while (get_next_line(fd, &list->line))
 	{
 		point = ft_strsplit(list->line, ' ');
 		while (x < list->xmax)
 		{
-			*(list->y + i) = y;
-			*(list->x + i) = x;
-			*(list->z + i) = ft_atoi(point[x]);
+			(list->p + i)->x = y;
+			(list->p + i)->x = x;
+			(list->p + i)->z = ft_atoi(point[x]);
 			x++;
 			i++;
 		}
 		x = 0;
 		free(list->line);
+		ft_putendl("bla");
 		ft_ptrchardel(&point, list->xmax);
 		y++;
 	}
+	ft_putendl("end la c'est ok?");
 }
 
 void	ft_get_pix(char *filename, t_env *list)

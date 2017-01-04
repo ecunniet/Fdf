@@ -6,11 +6,11 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/13 16:20:31 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 19:58:44 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/04 15:07:51 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "fdf.h"
 
 int		ft_verif_x(char **point, int xmax)
 {
@@ -36,7 +36,7 @@ int		ft_verif_x(char **point, int xmax)
 	return (xmax);
 }	
 
-void		ft_error(int i, char *str);
+void		ft_error(int i, char *str)
 {
 	if (i == 0)
 		ft_putstr("Usage: ./fdf <filename> [ case_size z_size ]\n");

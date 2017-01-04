@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 22:11:47 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/04 19:26:24 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,33 @@
 int	ft_verif_x(char **point, int xmax);
 void	ft_error(int i, char *str);
 
+typedef struct		s_point
+{
+	int		x;
+	int		y;
+	int		z;
+	int		color;
+}					t_point;
+
 typedef struct		s_env
 {
 	void	*mlx;
 	void	*win;
 	char	*line;
-	int		*x;
-	int		*y;
-	int		*z;
+	t_point	*p;
 	int		xmax;
 	int		ymax;
 }					t_env;
+
+typedef struct		s_img
+{
+	void	*img_ptr;
+	int		width;
+	int		height;
+	int		*bits_pp;
+	int		*size_line;
+	int		*endian;
+	char	*addr_img;
+}					t_img;
 
 #endif
