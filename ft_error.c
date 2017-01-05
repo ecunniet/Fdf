@@ -6,16 +6,16 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/13 16:20:31 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/04 15:07:51 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/05 15:53:36 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int		ft_verif_x(char **point, int xmax)
+int			ft_verif_x(char **point, int xmax)
 {
-	int x;
-	int i;
+	int		x;
+	int		i;
 
 	i = 0;
 	x = 0;
@@ -27,14 +27,13 @@ int		ft_verif_x(char **point, int xmax)
 	{
 		free(point[i]);
 		i++;
-	}	
+	}
 	if (xmax == -1)
 		xmax = x;
-	else
-		if (xmax != x)
-			ft_error(3, 0);
+	else if (xmax != x)
+		ft_error(3, 0);
 	return (xmax);
-}	
+}
 
 void		ft_error(int i, char *str)
 {
