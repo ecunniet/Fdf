@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/04 19:32:07 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/05 15:11:28 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		ft_draw_pix(t_env *list)
 	list->win = mlx_new_window(list->mlx, 150, 150, "mlx_42");
 	ft_putendl("fenetre");
 	img.img_ptr = mlx_new_image(list->mlx, img.width, img.height);
-	img.addr_img = mlx_get_data_addr(img.img_ptr, img.bits_pp, img.size_line, img.endian);
+	img.addr_img = mlx_get_data_addr(img.img_ptr, &img.bits_pp, &img.size_line, &img.endian);
 	*(img.addr_img + 1) = 255;
 	mlx_put_image_to_window(list->mlx, list->win, img.img_ptr, 25, 25);
 //	mlx_key_hook(e.win, my_key_funct, &e);

@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/04 19:26:24 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/05 15:11:32 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ typedef struct		s_img
 	void	*img_ptr;
 	int		width;
 	int		height;
-	int		*bits_pp;
-	int		*size_line;
-	int		*endian;
+	int		bits_pp;
+	int		size_line;
+	int		endian;
 	char	*addr_img;
 }					t_img;
 
