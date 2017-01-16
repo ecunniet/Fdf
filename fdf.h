@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/12 20:36:12 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/16 18:45:10 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,17 @@ typedef struct		s_point
 	int				x;
 	int				y;
 	int				z;
-	int				color;
+	int				R;
+	int				G;
+	int				B;
 }					t_point;
+
+typedef	struct		s_pixel
+{
+	int				x;
+	int				y;
+	int 			z;
+}					t_pixel;
 
 typedef struct		s_env
 {
@@ -33,6 +42,7 @@ typedef struct		s_env
 	void			*win;
 	char			*line;
 	t_point			*p;
+	t_pixel			*h;
 	int				xmax;
 	int				ymax;
 }					t_env;

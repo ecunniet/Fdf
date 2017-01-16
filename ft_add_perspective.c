@@ -6,22 +6,92 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/12 21:14:22 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/16 18:45:07 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <math.h>
 #include <stdio.h>
 #include <unistd.h>
+#define IMG 600
 
-//compilation: cc -o mlx main.c -lmlx -framework OpenGL -framework AppKit
-/*
-int		my_key_funct(int keycode, t_mix e structure avec plusieurs param?)
+typedef	struct	s_add
 {
-	printf("keycode event %d\n", keycode);
-	mlx_pixel_put(e->mlx, e->win, 300, 300, 0xFF00FF);
+	char	*adi;
+	int		numpix;
+	double	angle;
+}				t_add;
+
+void	ft_light_pixel(t_add *e)
+{
+	*(e->adi + e->numpix * 4) = 255;
+	*(e->adi + 1 + e->numpix * 4) = 255;
+	*(e->adi + 2 + e->numpix * 4) = 255;
+}
+
+void	ft_matrice(double x, double y, double z, t_add *e)
+{
+	x = 1*x + 0.5;
+	y = (y*cos(e->angle * (M_PI / 180))) - (z*sin(e->angle * (M_PI / 180))) + 0.5;
+	z = (y*sin(e->angle * (M_PI / 180))) + (z*cos(e->angle * (M_PI / 180))) + 0.5;
+	/*
+	x = (x*cos(e->angle * (M_PI / 180))) + (z*sin(e->angle * (M_PI / 180))) + 0.5;
+	y = 1*y + 0.5;
+	z = -(x*sin(e->angle * (M_PI / 180))) + (z*cos(e->angle * (M_PI / 180))) + 0.5;
+	*/
+	e->numpix = (int)x + (((int)y  + 0.2 * (int)z) * 100);
+	ft_light_pixel(e);
+}
+
+int		ft_key_funct(int keycode, t_add *e)
+{
+	printf("keycode event %d.\n", keycode);
+	if (keycode == 123)
+		e->angle += 5;
+	if (keycode == 124)
+		e->angle -= 5;
 	return (0);
-}*/
+}
+
+int		ft_draw_pix()
+{
+	void			*mlx;
+	void			*win;
+	void			*img_ptr;
+	int				width;
+	int				height;
+	int				bpp;
+	int				size_line;
+	int				endian;
+	t_add			e;
+
+	width = 400;
+	height = 400;
+	mlx = mlx_init();
+	win = mlx_new_window(mlx, 500, 500, "mlx_42");
+	img_ptr = mlx_new_image(mlx, width, height);
+	e.adi = mlx_get_data_addr(img_ptr, &bpp, &size_line, &endian);
+	e.angle = 45.00000;
+	ft_matrice(10, 10, 10, &e);
+	mlx_put_image_to_window(mlx, win, img_ptr, 50, 50);
+	mlx_key_hook(win, ft_key_funct, &e);
+	mlx_loop(mlx);
+	return (0);
+}
+
+void	ft_pixel_put_image(t_img *img, int x, int y)
+{
+	int tmp;
+
+	tmp = (x + (y * IMG)) * 8 + ((IMG / 2) * (IMG / 2)) + IMG / 3;
+	if (tmp < IMG * IMG && tmp >= 0)
+	{
+		*(img->adi + (tmp * 4))= 255;
+		*(img->adi + (1 + tmp * 4)) = 255;
+		*(img->adi + (2 + tmp * 4)) = 255;
+	}
+}
 
 void	ft_fill_image(t_env *list, t_img *img)
 {
@@ -30,9 +100,7 @@ void	ft_fill_image(t_env *list, t_img *img)
 	i = 0;
 	while (i < list->xmax * list->ymax)
 	{
-		*(img->adi + (((list->p + i)->x * 4 + (list->p + i)->y * 400))* 4) = 255;
-		*(img->adi + 1 + (((list->p + i)->x * 4 + (list->p + i)->y * 400)) * 4) = 255;
-		*(img->adi + 2 + (((list->p + i)->x * 4 + (list->p + i)->y * 400)) * 4) = 255;
+		ft_pixel_put_image(img, (list->p + i)->x, (list->p + i)->y + (list->p + i)->z + 0.5);
 		i++;
 	}
 }
@@ -41,15 +109,15 @@ int		ft_draw_pix(t_env *list)
 {
 	t_img	img;
 
-	img.width = 100;
-	img.height = 100;
+	img.width = IMG;
+	img.height = IMG;
 	list->mlx = mlx_init();
-	list->win = mlx_new_window(list->mlx, 150, 150, "mlx_42");
+	list->win = mlx_new_window(list->mlx, IMG, IMG, "mlx_42");
 	img.img_ptr = mlx_new_image(list->mlx, img.width, img.height);
 	img.adi = mlx_get_data_addr(img.img_ptr, &img.bpp,
 	&img.size_line, &img.endian);
 	ft_fill_image(list, &img);
-	mlx_put_image_to_window(list->mlx, list->win, img.img_ptr, 25, 25);
+	mlx_put_image_to_window(list->mlx, list->win, img.img_ptr, 0, 0);
 //	mlx_key_hook(e.win, my_key_funct, &e);
 	mlx_loop(list->mlx);
 	return (0);
