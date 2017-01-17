@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/16 21:53:08 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/17 19:08:11 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void				ft_error(int i, char *str);
 
 typedef struct		s_point
 {
-	int				x;
-	int				y;
-	int				z;
+	double			x;
+	double			y;
+	double			z;
 	int				R;
 	int				G;
 	int				B;
@@ -52,7 +52,7 @@ typedef struct		s_env
 	int				size_line;
 	int				endian;
 	char			*adi;
-	int				angle;
+	double			angle;
 }					t_env;
 
 #endif
