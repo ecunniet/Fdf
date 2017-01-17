@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/16 21:58:43 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/17 12:52:46 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,17 @@ void	ft_pixel_put_image(t_env *list, int x, int y)
 
 void	ft_matrice(t_env *list, int i)
 {
-	(list->h + i)->x = 1 * (list->p + i)->x;
+	/*(list->h + i)->x = 1 * (list->p + i)->x;
 	(list->h + i)->y = ((list->p + i)->y * cos(list->angle * (M_PI / 180))) 
 	- ((list->p + i)->z * sin(list->angle * (M_PI / 180)));
 	(list->h + i)->z = ((list->p + i)->y * sin(list->angle * (M_PI / 180)))
 	+ ((list->p + i)->z * cos(list->angle * (M_PI / 180)));
-	/*
-	x = (x*cos(e->angle * (M_PI / 180))) + (z*sin(e->angle * (M_PI / 180))) + 0.5;
-	y = 1*y + 0.5;
-	z = -(x*sin(e->angle * (M_PI / 180))) + (z*cos(e->angle * (M_PI / 180))) + 0.5;
 	*/
+	(list->h + i)->x = ((list->p + i)->x * cos(list->angle * (M_PI / 180))) 
+	+ ((list->p + i)->z * sin(list->angle * (M_PI / 180)));
+	(list->h + i)->y = 1 * (list->p + i)->y;
+	(list->h + i)->z = -((list->p + i)->x * sin(list->angle * (M_PI / 180)))
+   	+ ((list->h + i)->z * cos(list->angle * (M_PI / 180)));
 }
 
 int		ft_fill_image(t_env *list)
@@ -51,7 +52,8 @@ int		ft_fill_image(t_env *list)
 	while (i < list->xmax * list->ymax)
 	{
 		ft_matrice(list, i);
-		ft_pixel_put_image(list, (list->h + i)->x + 0.5, ((list->h + i)->y + 0.5 * (list->h + i)->z) + 0.5);
+		printf("x = %f\ny = %f", (list->h + i)->x + 0.5, ((list->h + i)->y + 0.1 * (list->h + i)->z) + 0.5);
+		ft_pixel_put_image(list, (list->h + i)->x + 0.5, ((list->h + i)->y + 0.1 * (list->h + i)->z) + 0.5);
 		i++;
 	}
 	return (0);
@@ -69,7 +71,7 @@ int		ft_key_funct(int keycode, t_env *list)
 
 int		ft_draw_pix(t_env *list)
 {
-	list->angle = 0;
+	list->angle = 45;
 	list->mlx = mlx_init();
 	list->win = mlx_new_window(list->mlx, IMG, IMG, "mlx_42");
 	list->img_ptr = mlx_new_image(list->mlx, IMG, IMG);
