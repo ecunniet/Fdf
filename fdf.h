@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/17 19:08:11 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/23 22:52:41 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct		s_env
 	void			*win;
 	char			*line;
 	t_point			*p;
+	t_pixel			*tmp;
 	t_pixel			*h;
 	int				xmax;
 	int				ymax;
@@ -52,7 +53,9 @@ typedef struct		s_env
 	int				size_line;
 	int				endian;
 	char			*adi;
-	double			angle;
+	double			angle_y;
+	double			angle_x;
+	double			angle_z;
 }					t_env;
 
 #endif
