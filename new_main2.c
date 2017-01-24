@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/23 23:15:27 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/24 17:40:41 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 {
 	int tmp;
 
-	tmp = (x + (y * IMG)) * 10 + ((IMG / 2) * (IMG / 2)) + IMG / 2;
+	tmp = (x + (y * IMG)) + ((IMG / 2) * (IMG / 2)) + IMG / 2;
 	if (tmp < IMG * IMG && tmp >= 0)
 	{
 		*(list->adi + (tmp * 4)) = code;
@@ -49,14 +49,14 @@ void	ft_matrice(t_env *list, int i, int x, int y)
 	sin(angle))) + ((list->tmp + i)->z * ((z * z) + (1 - (z * z)) * cos(angle)));
 }
 
-void	ft_ptp(t_env *list, int i, int code)
+void	ft_mid_zoom_ptp(t_env *list, int i, int code)
 {
 	if (code == 0)
 		while (i < list->xmax * list->ymax)
 		{
-			(list->tmp + i)->x = (list->p + i)->x;
-			(list->tmp + i)->y = (list->p + i)->y;
-			(list->tmp + i)->z = (list->p + i)->z;
+			(list->tmp + i)->x = ((list->p + i)->x - list->xmax / 2) * 10;
+			(list->tmp + i)->y = ((list->p + i)->y - list->ymax / 2) * 10;
+			(list->tmp + i)->z = ((list->p + i)->z - list->ymax / 2) * 10;
 			i++;
 		}
 	else
@@ -72,14 +72,15 @@ int		ft_fill_image(t_env *list)
 {
 	int		i;
 
-	ft_ptp(list, 0, 0);
+	ft_mid_zoom_ptp(list, 0, 0);
 	i = 0;
+	list->angle_z += 1;
 	while (i < list->xmax * list->ymax)
 	{
 		ft_matrice(list, i, 1, 0);
-		ft_ptp(list, i, 1);
+		ft_mid_zoom_ptp(list, i, 1);
 		ft_matrice(list, i, 0, 1);
-		ft_ptp(list, i, 2);
+		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
 		ft_pixel_put_image(list, (list->h + i)->x,
 		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
@@ -98,12 +99,12 @@ int		ft_fill_image(t_env *list)
 int		ft_key_funct(int keycode, t_env *list)
 {
 	printf("keycode event %d\ntaille de l'angle: %f\n", keycode, list->angle_x);
-	list->angle_x = (keycode == 123) ? (list->angle_x + 5) : list->angle_x;
-	list->angle_x = (keycode == 124) ? (list->angle_x - 5) : list->angle_x;
-	list->angle_y = (keycode == 126) ? (list->angle_y + 5) : list->angle_y;
-	list->angle_y = (keycode == 125) ? (list->angle_y - 5) : list->angle_y;
-	list->angle_z = (keycode == 69) ? (list->angle_z + 5) : list->angle_z;
-	list->angle_z = (keycode == 78) ? (list->angle_z - 5) : list->angle_z;
+	list->angle_x = (keycode == 123) ? (list->angle_x + 1) : list->angle_x;
+	list->angle_x = (keycode == 124) ? (list->angle_x - 1) : list->angle_x;
+	list->angle_y = (keycode == 126) ? (list->angle_y + 1) : list->angle_y;
+	list->angle_y = (keycode == 125) ? (list->angle_y - 1) : list->angle_y;
+	list->angle_z = (keycode == 69) ? (list->angle_z + 1) : list->angle_z;
+	list->angle_z = (keycode == 78) ? (list->angle_z - 1) : list->angle_z;
 	return (0);
 }
 
