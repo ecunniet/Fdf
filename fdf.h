@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/24 18:20:50 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/24 21:51:38 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ typedef struct		s_env
 	t_point			*p;
 	t_pixel			*tmp;
 	t_pixel			*h;
-	int				xmax;
-	int				ymax;
+	double			xmax;
+	double			ymax;
 	void			*img_ptr;
 	//int				width;
 	//int				height;
@@ -57,6 +57,9 @@ typedef struct		s_env
 	double			angle_y;
 	double			angle_x;
 	double			angle_z;
+	int				b_x;
+	int				b_y;
+	int				b_z;
 }					t_env;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/24 18:42:47 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/24 21:46:42 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,35 @@ void	ft_mid_zoom_ptp(t_env *list, int i, int code)
 	}
 }
 
+int		ft_key_funct(int keycode, t_env *list)
+{
+	printf("keycode event %d\ntaille de l'angle: %f\n", keycode, list->angle_x);
+	list->angle_x = (keycode == 123) ? (list->angle_x - 1) : list->angle_x;
+	list->angle_x = (keycode == 124) ? (list->angle_x + 1) : list->angle_x;
+	list->angle_y = (keycode == 126) ? (list->angle_y - 1) : list->angle_y;
+	list->angle_y = (keycode == 125) ? (list->angle_y + 1) : list->angle_y;
+	list->angle_z = (keycode == 69) ? (list->angle_z - 1) : list->angle_z;
+	list->angle_z = (keycode == 78) ? (list->angle_z + 1) : list->angle_z;
+	if (keycode == 53)
+		exit(EXIT_SUCCESS);
+	list->b_x = (keycode == 279) ? 1 : list->b_x;
+	list->b_x = (keycode == 117) ? 0 : list->b_x;
+	list->b_y = (keycode == 115) ? 1 : list->b_y;
+	list->b_y = (keycode == 119) ? 0 : list->b_y;
+	list->b_z = (keycode == 116) ? 1 : list->b_z;
+	list->b_z = (keycode == 121) ? 0 : list->b_z;
+	return (0);
+}
+
 int		ft_fill_image(t_env *list)
 {
 	int		i;
 
 	ft_mid_zoom_ptp(list, 0, 0);
 	i = 0;
+	list->angle_x = (list->b_x == 1) ? (list->angle_x + 1) : list->angle_x;
+	list->angle_y = (list->b_y == 1) ? (list->angle_y + 1) : list->angle_y;
+	list->angle_z = (list->b_z == 1) ? (list->angle_z + 1) : list->angle_z;
 	while (i < list->xmax * list->ymax)
 	{
 		ft_matrice(list, i, 1, 0);
@@ -95,18 +118,6 @@ int		ft_fill_image(t_env *list)
 		(list->h + i)->y + (list->h + i)->z + 0.5, 0);
 		i--;
 	}
-	return (0);
-}
-
-int		ft_key_funct(int keycode, t_env *list)
-{
-	printf("keycode event %d\ntaille de l'angle: %f\n", keycode, list->angle_x);
-	list->angle_x = (keycode == 123) ? (list->angle_x + 1) : list->angle_x;
-	list->angle_x = (keycode == 124) ? (list->angle_x - 1) : list->angle_x;
-	list->angle_y = (keycode == 126) ? (list->angle_y + 1) : list->angle_y;
-	list->angle_y = (keycode == 125) ? (list->angle_y - 1) : list->angle_y;
-	list->angle_z = (keycode == 69) ? (list->angle_z + 1) : list->angle_z;
-	list->angle_z = (keycode == 78) ? (list->angle_z - 1) : list->angle_z;
 	return (0);
 }
 

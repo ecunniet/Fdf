@@ -6,12 +6,13 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/12 21:12:30 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/11/22 16:30:23 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/24 22:12:11 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 static int		ft_countword(char const *s, char c)
 {
@@ -61,7 +62,11 @@ static char		*ft_strmydup(char const *s1, char c)
 	while (s1[j + i] != c)
 		i++;
 	if (!(s2 = (char*)malloc(sizeof(char) * (i + 1))))
-		return (NULL);
+	{
+		write(1, "pb malloc.\n", 9);
+		exit(EXIT_FAILURE);
+	}
+	//	return (NULL);
 	i = 0;
 	while (s1[j + i] != c)
 	{
@@ -86,7 +91,11 @@ char			**ft_strsplit(char const *s, char c)
 		return (NULL);
 	nword = ft_countword(s, c);
 	if (!(str = (char**)malloc(sizeof(char*) * (nword + 1))))
-		return (NULL);
+	{
+		write(1, "pb m\n", 5);
+		exit(EXIT_FAILURE);
+	}
+	//	return (NULL);
 	while (i < nword)
 	{
 		nletter = ft_location(s, c, j);
