@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/24 17:40:41 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/24 18:42:47 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 {
 	int tmp;
 
-	tmp = (x + (y * IMG)) + ((IMG / 2) * (IMG / 2)) + IMG / 2;
+	tmp = (x + (y * IMG)) + (((IMG / 2) * IMG) + (IMG / 2));
 	if (tmp < IMG * IMG && tmp >= 0)
 	{
 		*(list->adi + (tmp * 4)) = code;
@@ -31,22 +31,25 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 
 void	ft_matrice(t_env *list, int i, int x, int y)
 {
-	int 	z;
+	int		z;
 	double	angle;
 
 	z = (x == 0 && y == 0) ? 1 : 0;
 	angle = (x == 1) ? (list->angle_x * (M_PI / 180)) : -1;
 	angle = (y == 1 && angle == -1) ? (list->angle_y * (M_PI / 180)) : angle;
 	angle = (z == 1 && angle == -1) ? (list->angle_z * (M_PI / 180)) : angle;
-	(list->h + i)->x = ((list->tmp + i)->x * ((x * x) + (1 - (x * x)) * cos(angle)))
-	+ ((list->tmp + i)->y * (x * y * (1 - cos(angle)) - z * sin(angle)))
-	+ ((list->tmp + i)->z * (x * z * (1 - cos(angle)) + y * sin(angle)));
-	(list->h + i)->y = ((list->tmp + i)->x * (x * y * (1 - cos(angle)) + z * 
-	sin(angle))) + ((list->tmp + i)->y * ((y * y) + (1 - (y * y)) * cos(angle)))
-	+ ((list->tmp + i)->z * (y * z * (1 - cos(angle)) - x * sin(angle)));
-	(list->h + i)->z = ((list->tmp + i)->x * (x * z * (1 - cos(angle)) - y * 
-	sin(angle))) + ((list->tmp + i)->y * (y * z * (1 - cos(angle)) + x * 
-	sin(angle))) + ((list->tmp + i)->z * ((z * z) + (1 - (z * z)) * cos(angle)));
+	(list->h + i)->x = ((list->tmp + i)->x * ((x * x) + (1 - (x * x)) *
+	cos(angle))) + ((list->tmp + i)->y * (x * y * (1 - cos(angle)) - z *
+	sin(angle))) + ((list->tmp + i)->z * (x * z * (1 - cos(angle)) + y *
+	sin(angle)));
+	(list->h + i)->y = ((list->tmp + i)->x * (x * y * (1 - cos(angle)) + z *
+	sin(angle))) + ((list->tmp + i)->y * ((y * y) + (1 - (y * y)) *
+	cos(angle))) + ((list->tmp + i)->z * (y * z * (1 - cos(angle)) - x *
+	sin(angle)));
+	(list->h + i)->z = ((list->tmp + i)->x * (x * z * (1 - cos(angle)) - y *
+	sin(angle))) + ((list->tmp + i)->y * (y * z * (1 - cos(angle)) + x *
+	sin(angle))) + ((list->tmp + i)->z * ((z * z) + (1 - (z * z)) *
+	cos(angle)));
 }
 
 void	ft_mid_zoom_ptp(t_env *list, int i, int code)
@@ -55,17 +58,16 @@ void	ft_mid_zoom_ptp(t_env *list, int i, int code)
 		while (i < list->xmax * list->ymax)
 		{
 			(list->tmp + i)->x = ((list->p + i)->x - list->xmax / 2) * 10;
-			(list->tmp + i)->y = ((list->p + i)->y - list->ymax / 2) * 10;
+			(list->tmp + i)->y = (list->p + i)->y;
 			(list->tmp + i)->z = ((list->p + i)->z - list->ymax / 2) * 10;
 			i++;
 		}
 	else
-		if (i < list->xmax * list->ymax)
-		{
-			(list->tmp + i)->x = (list->h + i)->x;
-			(list->tmp + i)->y = (list->h + i)->y;
-			(list->tmp + i)->z = (list->h + i)->z;
-		}
+	{
+		(list->tmp + i)->x = (list->h + i)->x;
+		(list->tmp + i)->y = (list->h + i)->y;
+		(list->tmp + i)->z = (list->h + i)->z;
+	}
 }
 
 int		ft_fill_image(t_env *list)
@@ -74,7 +76,6 @@ int		ft_fill_image(t_env *list)
 
 	ft_mid_zoom_ptp(list, 0, 0);
 	i = 0;
-	list->angle_z += 1;
 	while (i < list->xmax * list->ymax)
 	{
 		ft_matrice(list, i, 1, 0);
@@ -87,7 +88,8 @@ int		ft_fill_image(t_env *list)
 		i++;
 	}
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
-	while (0 <= i)
+	i--;
+	while (i >= 0)
 	{
 		ft_pixel_put_image(list, (list->h + i)->x,
 		(list->h + i)->y + (list->h + i)->z + 0.5, 0);
@@ -149,7 +151,7 @@ void	ft_location(t_env *list, int i)
 		{
 			(list->p + i)->z = y;
 			(list->p + i)->x = x;
-			(list->p + i)->y = ft_atoi(point[x]);
+			(list->p + i)->y = -ft_atoi(point[x]);
 			x++;
 			i++;
 		}
