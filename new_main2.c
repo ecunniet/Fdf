@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/25 16:30:38 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/26 00:35:57 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #define IMG 600
-/*
+
 void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 {
 	int tmp;
@@ -138,11 +138,55 @@ int		ft_draw_pix(t_env *list)
 	return (0);
 }
 
+char		*ft_strmydup(char const *s1, char c)
+{
+	char	*s2;
+	size_t	i;
+
+	i = 0;
+	while (s1[i] != c && s1[i] != '\0')
+		i++;
+	if (!(s2 = (char*)malloc(sizeof(char) * (i + 1))))
+	{
+		write(1, "pb malloc.\n", 9);
+		exit(EXIT_FAILURE);
+	}
+	i = 0;
+	while (s1[i] != c && s1[i] != '\0')
+	{
+		s2[i] = s1[i];
+		i++;
+	}
+	s2[i] = '\0';
+	return (s2);
+}
+
+char			*ft_mysplit(char *s, char c, int nbword)
+{
+	int		z;
+	int		j;
+
+	z = 0;
+	j = 0;
+	while (j < nbword && s[z] != '\0')
+	{
+		if (s[z] != c && (s[z + 1] == c || s[z + 1] == '\0'))
+			j++;
+		z++;
+	}
+	z--;
+	while (s[z] != c && z >= 0)
+		if (--z < 0)
+			break ;
+	z++;
+	return (ft_strmydup(s + z, c));
+}
+
 void	ft_location(t_env *list, int i)
 {
 	int		y;
 	int		x;
-	char	**point;
+	char	*str;
 
 	y = 0;
 	if (!(list->p = (t_point*)malloc(sizeof(t_point)
@@ -156,23 +200,23 @@ void	ft_location(t_env *list, int i)
 		return ;
 	while (get_next_line(list->fd, &list->line))
 	{
-		point = ft_strsplit(list->line, ' ');
 		x = 0;
 		while (x < list->xmax)
 		{
+			str = ft_mysplit(list->line, ' ', x + 1);
 			(list->p + i)->z = y;
 			(list->p + i)->x = x;
-			(list->p + i)->y = -ft_atoi(point[x]);
+			(list->p + i)->y = -ft_atoi(str);
+			free(str);
 			x++;
 			i++;
 		}
 		free(list->line);
-		ft_ptrchardel(&point, list->xmax);
 		y++;
 	}
 }
-*/
-int		ft_countspot(char const *s, char c)
+
+int		ft_count_x(char const *s, char c)
 {
 	size_t i;
 	size_t j;
@@ -198,13 +242,12 @@ void	ft_get_pix(char *filename, t_env *list)
 	{
 		while (get_next_line(list->fd, &list->line))
 		{
-			list->xmax = ft_verif_x(ft_countspot(list->line, ' '), list->xmax);
+			list->xmax = ft_verif_x(ft_count_x(list->line, ' '), list->xmax);
 			printf("XMAX = %f et YMAX = %f \n", list->xmax, list->ymax);
 			free(list->line);
 			list->ymax++;
 		}
-		close(list->fd);
-	/*	if (close(list->fd) == 0)
+		if (close(list->fd) == 0)
 		{
 			if ((list->fd = open(filename, O_RDONLY)))
 			{
@@ -214,7 +257,7 @@ void	ft_get_pix(char *filename, t_env *list)
 			}
 		}
 		else
-			ft_error(4, 0);*/
+			ft_error(4, 0);
 	}
 	else
 		ft_error(1, filename);
@@ -227,7 +270,7 @@ int		main(int argc, char **argv)
 	if (argc == 2)
 	{
 		ft_get_pix(argv[1], &list);
-		//ft_draw_pix(&list);
+		ft_draw_pix(&list);
 	}
 	else
 		ft_error(0, 0);

@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/12 21:12:30 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/25 15:51:06 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/25 23:30:31 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ static char		*ft_strmydup(char const *s1, char c)
 		write(1, "pb malloc.\n", 9);
 		exit(EXIT_FAILURE);
 	}
-	//	return (NULL);
 	i = 0;
 	while (s1[j + i] != c)
 	{
@@ -95,7 +94,6 @@ char			**ft_strsplit(char const *s, char c)
 		write(1, "pb m\n", 5);
 		exit(EXIT_FAILURE);
 	}
-	//	return (NULL);
 	while (i < nword)
 	{
 		nletter = ft_location(s, c, j);
