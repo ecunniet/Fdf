@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/25 16:30:38 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/25 16:06:59 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #define IMG 600
-/*
+
 void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 {
 	int tmp;
@@ -171,24 +171,6 @@ void	ft_location(t_env *list, int i)
 		y++;
 	}
 }
-*/
-int		ft_countspot(char const *s, char c)
-{
-	size_t i;
-	size_t j;
-
-	i = 0;
-	j = 0;
-	if (s == NULL)
-		ft_error(2, 0);
-	while (i < ft_strlen(s))
-	{
-		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
-			j++;
-		i++;
-	}
-	return (j);
-}
 
 void	ft_get_pix(char *filename, t_env *list)
 {
@@ -198,13 +180,11 @@ void	ft_get_pix(char *filename, t_env *list)
 	{
 		while (get_next_line(list->fd, &list->line))
 		{
-			list->xmax = ft_verif_x(ft_countspot(list->line, ' '), list->xmax);
-			printf("XMAX = %f et YMAX = %f \n", list->xmax, list->ymax);
+			list->xmax = ft_verif_x(ft_strsplit(list->line, ' '), list->xmax);
 			free(list->line);
 			list->ymax++;
 		}
-		close(list->fd);
-	/*	if (close(list->fd) == 0)
+		if (close(list->fd) == 0)
 		{
 			if ((list->fd = open(filename, O_RDONLY)))
 			{
@@ -214,7 +194,7 @@ void	ft_get_pix(char *filename, t_env *list)
 			}
 		}
 		else
-			ft_error(4, 0);*/
+			ft_error(4, 0);
 	}
 	else
 		ft_error(1, filename);

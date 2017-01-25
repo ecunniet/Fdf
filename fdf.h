@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/24 21:51:38 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/25 16:32:39 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-int					ft_verif_x(char **point, int xmax);
+int					ft_verif_x(int xmax_new, int xmax_old);
 void				ft_error(int i, char *str);
 
 typedef struct		s_point

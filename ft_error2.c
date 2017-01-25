@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error.c                                         :+:      :+:    :+:   */
+/*   ft_error2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/13 16:20:31 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/25 15:51:01 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/25 16:30:20 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int			ft_verif_x(char **point, int xmax)
+int			ft_verif_x(int xmax_new, int xmax_old)
 {
 	int		x;
 	int		i;
 
 	i = 0;
 	x = 0;
-	if (point == NULL)
+	if (xmax_old == -1 && xmax_new == 0)
 		ft_error(2, 0);
-	while (point[x])
-		x++;
-	while (point[i])
-	{
-		free(point[i]);
-		i++;
-	}
-	free(point);
-	if (xmax == -1)
-		xmax = x;
-	else if (xmax != x)
+	else if (xmax_old == -1 && xmax_new > 0)
+		return (xmax_new);
+	else if (xmax_new != xmax_old)
 		ft_error(3, 0);
 	return (xmax);
 }
