@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/26 19:57:34 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/26 22:11:25 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,74 +32,54 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 	}
 }
 
-void line(int xi, int yi, int xf, int yf, t_add *e)
+void	ft_bresenham(t_env *list, int n, int color)
 {
-	int dx;
-	int dy;
-	int err;
-	int x;
-	int y;
-	int xinc;
-	int yinc;
-	int i;
+	t_line	bres;
 
-	x = xi;
-	y = yi;
-	dx = ABS(xf - xi);
-	dy = ABS(yf - yi);
-	xinc = (xf > xi) ? 1 : -1;
-	yinc = (yf > yi) ? 1 : -1;
-//	ft_light_pixel(x, y, e);
-	ft_pixel_put_image(list, (list->h + i)->x,
-		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
-//		i++;
-	i = 1;
-	if (dx > dy)
+	bres.xi = (int)((list->h + (n - 1))->x);
+	bres.yi  = (int)((list->h + (n - 1))->y + (list->h + (n - 1))->z + 0.5);
+	bres.xf = (int)((list->h + n)->x);
+	bres.yf = (int)((list->h + n)->y + (list->h + n)->z + 0.5);
+	bres.dx = ABS(bres.xf - bres.xi);
+	bres.dy = ABS(bres.yf - bres.yi);
+	bres.xinc = (bres.xf > bres.xi) ? 1 : -1;
+	bres.yinc = (bres.yf > bres.yi) ? 1 : -1;
+	ft_pixel_put_image(list, bres.xi, bres.yi, color);
+	bres.i = 1;
+	if (bres.dx > bres.dy)
 	{
-		err = dx / 2;
-		while (i <= dx)
+		bres.err = bres.dx / 2;
+		while (bres.i <= bres.dx)
 		{
-			x += xinc;
-			err += dy;
-			if (err >= dx)
+			bres.xi += bres.xinc;
+			bres.err += bres.dy;
+			if (bres.err >= bres.dx)
 			{
-				err -= dx;
-				y += yinc;
+				bres.err -= bres.dx;
+				bres.yi += bres.yinc;
 			}
-		ft_pixel_put_image(list, (list->h + i)->x,
-		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
-//		i++;
-//			ft_light_pixel(x, y, e);
-			i++;
+			ft_pixel_put_image(list, bres.xi, bres.yi, color);
+			bres.i++;
 		}
 	}
 	else
 	{
-		err = dy / 2;
-		while (i <= dy)
+		bres.err = bres.dy / 2;
+		while (bres.i <= bres.dy)
 		{
-			y += yinc;
-			err += dx;
-			if (err >= dy)
+			bres.yi += bres.yinc;
+			bres.err += bres.dx;
+			if (bres.err >= bres.dy)
 			{
-				err -= dy;
-				x += xinc;
+				bres.err -= bres.dy;
+				bres.xi += bres.xinc;
 			}
-		ft_pixel_put_image(list, (list->h + i)->x,
-		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
-		i++;
-//			ft_light_pixel(x, y, e);
-//			i++;
+			ft_pixel_put_image(list, bres.xi, bres.yi, color);
+			bres.i++;
 		}
 	}
 }
 
-
-int main(void)
-{
-	ft_draw_pix();
-	return (0);
-}
 void	ft_matrice(t_env *list, int i, int x, int y)
 {
 	int		z;
@@ -179,19 +159,22 @@ int		ft_fill_image(t_env *list)
 		ft_matrice(list, i, 0, 1);
 		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
-		//if (i > 0)
-		//line(200, 200, x, y, &e);
-		ft_pixel_put_image(list, (list->h + i)->x,
-		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
+		if (i > 0)
+			ft_bresenham(list, i, 255);
+		else
+			ft_pixel_put_image(list, (list->h + i)->x,
+			(list->h + i)->y + (list->h + i)->z + 0.5, 255);
 		i++;
 	}
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
 	i--;
 	while (i >= 0)
 	{
-	//	line(200, 200, x, y, &e);
-		ft_pixel_put_image(list, (list->h + i)->x,
-		(list->h + i)->y + (list->h + i)->z + 0.5, 0);
+		if (i > 0)
+			ft_bresenham(list, i, 0);
+		else
+			ft_pixel_put_image(list, (list->h + i)->x,
+			(list->h + i)->y + (list->h + i)->z + 0.5, 0);
 		i--;
 	}
 	return (0);

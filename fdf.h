@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/26 19:57:37 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/26 21:59:44 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,19 @@ typedef struct		s_env
 	int				b_y;
 	int				b_z;
 }					t_env;
+
+typedef	struct		s_line
+{
+	int				dx;
+	int				dy;
+	int				err;
+	int				xi;
+	int				yi;
+	int				xf;
+	int				yf;
+	int				xinc;
+	int				yinc;
+	int				i;
+}					t_line;
 
 #endif
