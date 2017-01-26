@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/25 16:32:39 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/26 19:57:37 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ typedef struct		s_env
 	double			xmax;
 	double			ymax;
 	void			*img_ptr;
-	//int				width;
-	//int				height;
+	int				width;
+	int				height;
 	int				bpp;
 	int				size_line;
 	int				endian;
 	char			*adi;
-	int				zoom;
+	double			zoom;
 	double			angle_y;
 	double			angle_x;
 	double			angle_z;

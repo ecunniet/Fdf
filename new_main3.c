@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/26 19:41:13 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/26 19:57:34 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #define WIDTH 1500
 #define HEIGHT 1000
+#define ABS(Value) ((Value < 0) ? -(Value) : (Value))
 
 void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 {
@@ -31,6 +32,74 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 	}
 }
 
+void line(int xi, int yi, int xf, int yf, t_add *e)
+{
+	int dx;
+	int dy;
+	int err;
+	int x;
+	int y;
+	int xinc;
+	int yinc;
+	int i;
+
+	x = xi;
+	y = yi;
+	dx = ABS(xf - xi);
+	dy = ABS(yf - yi);
+	xinc = (xf > xi) ? 1 : -1;
+	yinc = (yf > yi) ? 1 : -1;
+//	ft_light_pixel(x, y, e);
+	ft_pixel_put_image(list, (list->h + i)->x,
+		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
+//		i++;
+	i = 1;
+	if (dx > dy)
+	{
+		err = dx / 2;
+		while (i <= dx)
+		{
+			x += xinc;
+			err += dy;
+			if (err >= dx)
+			{
+				err -= dx;
+				y += yinc;
+			}
+		ft_pixel_put_image(list, (list->h + i)->x,
+		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
+//		i++;
+//			ft_light_pixel(x, y, e);
+			i++;
+		}
+	}
+	else
+	{
+		err = dy / 2;
+		while (i <= dy)
+		{
+			y += yinc;
+			err += dx;
+			if (err >= dy)
+			{
+				err -= dy;
+				x += xinc;
+			}
+		ft_pixel_put_image(list, (list->h + i)->x,
+		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
+		i++;
+//			ft_light_pixel(x, y, e);
+//			i++;
+		}
+	}
+}
+
+
+int main(void)
+{
+	ft_draw_pix();
+	return (0);
+}
 void	ft_matrice(t_env *list, int i, int x, int y)
 {
 	int		z;
@@ -110,6 +179,8 @@ int		ft_fill_image(t_env *list)
 		ft_matrice(list, i, 0, 1);
 		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
+		//if (i > 0)
+		//line(200, 200, x, y, &e);
 		ft_pixel_put_image(list, (list->h + i)->x,
 		(list->h + i)->y + (list->h + i)->z + 0.5, 255);
 		i++;
@@ -118,6 +189,7 @@ int		ft_fill_image(t_env *list)
 	i--;
 	while (i >= 0)
 	{
+	//	line(200, 200, x, y, &e);
 		ft_pixel_put_image(list, (list->h + i)->x,
 		(list->h + i)->y + (list->h + i)->z + 0.5, 0);
 		i--;
