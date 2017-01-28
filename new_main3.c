@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/26 22:11:25 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/28 20:00:06 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define HEIGHT 1000
 #define ABS(Value) ((Value < 0) ? -(Value) : (Value))
 
-void	ft_pixel_put_image(t_env *list, int x, int y, char code)
+void	ft_pixel_put_image(t_env *list, int x, int y)
 {
 	int tmp;
 
@@ -26,25 +26,29 @@ void	ft_pixel_put_image(t_env *list, int x, int y, char code)
 	if (x + WIDTH / 2 < WIDTH && y + HEIGHT / 2 < HEIGHT && 
 	y + HEIGHT / 2 >= 0 && x + WIDTH / 2 >= 0)
 	{
-		*(list->adi + (tmp * 4)) = code;
+		*(((int*)list->adi) + tmp) = list->color;
+		/**(list->adi + (tmp * 4)) = code;
 		*(list->adi + (1 + tmp * 4)) = code;
-		*(list->adi + (2 + tmp * 4)) = code;
+		*(list->adi + (2 + tmp * 4)) = code;*/
 	}
 }
 
-void	ft_bresenham(t_env *list, int n, int color)
+void	ft_bresenham(t_env *list, int n, int i)
 {
 	t_line	bres;
 
-	bres.xi = (int)((list->h + (n - 1))->x);
-	bres.yi  = (int)((list->h + (n - 1))->y + (list->h + (n - 1))->z + 0.5);
+	bres.xi = (i == 0) ? (int)((list->h + (n - 1))->x) :
+	(int)((list->h + (n  - (int)(list->xmax)))->x);
+	bres.yi  = (i == 0) ? (int)((list->h + (n - 1))->y + (list->h +
+	(n - 1))->z + 0.5) : (int)((list->h + (n - (int)(list->xmax)))->y +
+	(list->h + (n - (int)(list->xmax)))->z + 0.5);
 	bres.xf = (int)((list->h + n)->x);
 	bres.yf = (int)((list->h + n)->y + (list->h + n)->z + 0.5);
 	bres.dx = ABS(bres.xf - bres.xi);
 	bres.dy = ABS(bres.yf - bres.yi);
 	bres.xinc = (bres.xf > bres.xi) ? 1 : -1;
 	bres.yinc = (bres.yf > bres.yi) ? 1 : -1;
-	ft_pixel_put_image(list, bres.xi, bres.yi, color);
+	ft_pixel_put_image(list, bres.xi, bres.yi);
 	bres.i = 1;
 	if (bres.dx > bres.dy)
 	{
@@ -58,7 +62,7 @@ void	ft_bresenham(t_env *list, int n, int color)
 				bres.err -= bres.dx;
 				bres.yi += bres.yinc;
 			}
-			ft_pixel_put_image(list, bres.xi, bres.yi, color);
+			ft_pixel_put_image(list, bres.xi, bres.yi);
 			bres.i++;
 		}
 	}
@@ -74,7 +78,7 @@ void	ft_bresenham(t_env *list, int n, int color)
 				bres.err -= bres.dy;
 				bres.xi += bres.xinc;
 			}
-			ft_pixel_put_image(list, bres.xi, bres.yi, color);
+			ft_pixel_put_image(list, bres.xi, bres.yi);
 			bres.i++;
 		}
 	}
@@ -143,6 +147,17 @@ int		ft_key_funct(int keycode, t_env *list)
 	return (0);
 }
 
+void	ft_call_bresenham(t_env *list, int i, int color)
+{
+	list->color = color;
+	if (i == 0)
+		ft_pixel_put_image(list, (list->h + i)->x,
+		(list->h + i)->y + (list->h + i)->z + 0.5);
+	if (i % (int)(list->xmax) != 0)
+		ft_bresenham(list, i, 0);
+	if (i >= list->xmax)
+		ft_bresenham(list, i, 1);
+}
 int		ft_fill_image(t_env *list)
 {
 	int		i;
@@ -152,31 +167,21 @@ int		ft_fill_image(t_env *list)
 	list->angle_x = (list->b_x == 1) ? (list->angle_x + 1) : list->angle_x;
 	list->angle_y = (list->b_y == 1) ? (list->angle_y + 1) : list->angle_y;
 	list->angle_z = (list->b_z == 1) ? (list->angle_z + 1) : list->angle_z;
-	while (i < list->xmax * list->ymax)
+	while (i++ < list->xmax * list->ymax)
 	{
+		list->color = ((list->tmp + i)->y >= 0) ? 0x00BFFF : 0xDB1702;
+		list->color = ((list->tmp + i)->y == 0 && (list->tmp +
+		(i - (int)(list->xmax)))->y == 0) ? 0xFFFFFF : list->color;
 		ft_matrice(list, i, 1, 0);
 		ft_mid_zoom_ptp(list, i, 1);
 		ft_matrice(list, i, 0, 1);
 		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
-		if (i > 0)
-			ft_bresenham(list, i, 255);
-		else
-			ft_pixel_put_image(list, (list->h + i)->x,
-			(list->h + i)->y + (list->h + i)->z + 0.5, 255);
-		i++;
+		ft_call_bresenham(list , i, list->color);
 	}
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
-	i--;
-	while (i >= 0)
-	{
-		if (i > 0)
-			ft_bresenham(list, i, 0);
-		else
-			ft_pixel_put_image(list, (list->h + i)->x,
-			(list->h + i)->y + (list->h + i)->z + 0.5, 0);
-		i--;
-	}
+	while (--i >= 0)
+		ft_call_bresenham(list , i, 0x00000);
 	return (0);
 }
 
