@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/28 19:03:22 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/31 00:33:59 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,15 @@ typedef struct		s_env
 	char			*adi;
 	int				color;
 	double			zoom;
+	int				center_x;
+	int				center_y;
 	double			angle_y;
 	double			angle_x;
 	double			angle_z;
 	int				b_x;
 	int				b_y;
 	int				b_z;
+	char			*str;
 }					t_env;
 
 typedef	struct		s_line

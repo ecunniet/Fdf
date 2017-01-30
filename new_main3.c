@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/28 20:00:06 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/31 00:42:06 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,53 @@ void	ft_pixel_put_image(t_env *list, int x, int y)
 {
 	int tmp;
 
-	tmp = (x + (y * WIDTH)) + (((HEIGHT / 2) * WIDTH) + (WIDTH / 2));
-	if (x + WIDTH / 2 < WIDTH && y + HEIGHT / 2 < HEIGHT && 
-	y + HEIGHT / 2 >= 0 && x + WIDTH / 2 >= 0)
+	if (list->center_x == -1 && list->center_y == -1)
 	{
-		*(((int*)list->adi) + tmp) = list->color;
-		/**(list->adi + (tmp * 4)) = code;
-		*(list->adi + (1 + tmp * 4)) = code;
-		*(list->adi + (2 + tmp * 4)) = code;*/
+		tmp = (x + (y * WIDTH)) + (((HEIGHT / 2) * WIDTH) + (WIDTH / 2));
+		if (x + WIDTH / 2 < WIDTH && y + HEIGHT / 2 < HEIGHT &&
+		y + HEIGHT / 2 >= 0 && x + WIDTH / 2 >= 0)
+			*(((int*)list->adi) + tmp) = list->color;
+	}
+	else
+	{
+		tmp = (x + (y * WIDTH)) + ((list->center_y * WIDTH) + list->center_x);
+		if (x + list->center_x < WIDTH && y + list->center_y < HEIGHT &&
+		y + list->center_y >= 0 && x + list->center_x >= 0)
+			*(((int*)list->adi) + tmp) = list->color;
+	}
+}
+
+void	ft_bresenham_y(t_env *list, t_line *bres)
+{
+	bres->err = bres->dy / 2;
+	while (bres->i <= bres->dy)
+	{
+		bres->yi += bres->yinc;
+		bres->err += bres->dx;
+		if (bres->err >= bres->dy)
+		{
+			bres->err -= bres->dy;
+			bres->xi += bres->xinc;
+		}
+		ft_pixel_put_image(list, bres->xi, bres->yi);
+		bres->i++;
+	}
+}
+
+void	ft_bresenham_x(t_env *list, t_line *bres)
+{
+	bres->err = bres->dx / 2;
+	while (bres->i <= bres->dx)
+	{
+		bres->xi += bres->xinc;
+		bres->err += bres->dy;
+		if (bres->err >= bres->dx)
+		{
+			bres->err -= bres->dx;
+			bres->yi += bres->yinc;
+		}
+		ft_pixel_put_image(list, bres->xi, bres->yi);
+		bres->i++;
 	}
 }
 
@@ -38,8 +77,8 @@ void	ft_bresenham(t_env *list, int n, int i)
 	t_line	bres;
 
 	bres.xi = (i == 0) ? (int)((list->h + (n - 1))->x) :
-	(int)((list->h + (n  - (int)(list->xmax)))->x);
-	bres.yi  = (i == 0) ? (int)((list->h + (n - 1))->y + (list->h +
+	(int)((list->h + (n - (int)(list->xmax)))->x);
+	bres.yi = (i == 0) ? (int)((list->h + (n - 1))->y + (list->h +
 	(n - 1))->z + 0.5) : (int)((list->h + (n - (int)(list->xmax)))->y +
 	(list->h + (n - (int)(list->xmax)))->z + 0.5);
 	bres.xf = (int)((list->h + n)->x);
@@ -51,37 +90,9 @@ void	ft_bresenham(t_env *list, int n, int i)
 	ft_pixel_put_image(list, bres.xi, bres.yi);
 	bres.i = 1;
 	if (bres.dx > bres.dy)
-	{
-		bres.err = bres.dx / 2;
-		while (bres.i <= bres.dx)
-		{
-			bres.xi += bres.xinc;
-			bres.err += bres.dy;
-			if (bres.err >= bres.dx)
-			{
-				bres.err -= bres.dx;
-				bres.yi += bres.yinc;
-			}
-			ft_pixel_put_image(list, bres.xi, bres.yi);
-			bres.i++;
-		}
-	}
+		ft_bresenham_x(list, &bres);
 	else
-	{
-		bres.err = bres.dy / 2;
-		while (bres.i <= bres.dy)
-		{
-			bres.yi += bres.yinc;
-			bres.err += bres.dx;
-			if (bres.err >= bres.dy)
-			{
-				bres.err -= bres.dy;
-				bres.xi += bres.xinc;
-			}
-			ft_pixel_put_image(list, bres.xi, bres.yi);
-			bres.i++;
-		}
-	}
+		ft_bresenham_y(list, &bres);
 }
 
 void	ft_matrice(t_env *list, int i, int x, int y)
@@ -112,9 +123,11 @@ void	ft_mid_zoom_ptp(t_env *list, int i, int code)
 	if (code == 0)
 		while (i < list->xmax * list->ymax)
 		{
-			(list->tmp + i)->x = ((list->p + i)->x - list->xmax / 2) * 10 * list->zoom;
+			(list->tmp + i)->x = ((list->p + i)->x - list->xmax / 2)
+			* 10 * list->zoom;
 			(list->tmp + i)->y = (list->p + i)->y * list->zoom;
-			(list->tmp + i)->z = ((list->p + i)->z - list->ymax / 2) * 10 * list->zoom;
+			(list->tmp + i)->z = ((list->p + i)->z - list->ymax / 2)
+			* 10 * list->zoom;
 			i++;
 		}
 	else
@@ -135,7 +148,8 @@ int		ft_key_funct(int keycode, t_env *list)
 	list->angle_z = (keycode == 69) ? (list->angle_z - 1) : list->angle_z;
 	list->angle_z = (keycode == 78) ? (list->angle_z + 1) : list->angle_z;
 	list->zoom = (keycode == 67) ? (list->zoom + 0.2) : list->zoom;
-	list->zoom = (keycode == 75 && list->zoom > 0.3) ? (list->zoom - 0.2) : list->zoom;
+	list->zoom = (keycode == 75 && list->zoom > 0.3) ? (list->zoom - 0.2)
+	: list->zoom;
 	if (keycode == 53)
 		exit(EXIT_SUCCESS);
 	list->b_x = (keycode == 279) ? 1 : list->b_x;
@@ -144,6 +158,28 @@ int		ft_key_funct(int keycode, t_env *list)
 	list->b_y = (keycode == 119) ? 0 : list->b_y;
 	list->b_z = (keycode == 116) ? 1 : list->b_z;
 	list->b_z = (keycode == 121) ? 0 : list->b_z;
+	return (0);
+}
+
+int		ft_mouse_funct(int button, int x, int y, t_env *list)
+{
+	if (button == 1)
+	{
+		list->center_x = x;
+		list->center_y = y;
+	}
+	if (button == 2)
+	{
+		list->b_x = 0;
+		list->b_y = 0;
+		list->b_z = 0;
+		list->angle_x = 15;
+		list->angle_y = 25;
+		list->angle_z = 0;
+		list->center_x = -1;
+		list->center_y = -1;
+		list->zoom = 1;
+	}
 	return (0);
 }
 
@@ -158,6 +194,7 @@ void	ft_call_bresenham(t_env *list, int i, int color)
 	if (i >= list->xmax)
 		ft_bresenham(list, i, 1);
 }
+
 int		ft_fill_image(t_env *list)
 {
 	int		i;
@@ -167,21 +204,19 @@ int		ft_fill_image(t_env *list)
 	list->angle_x = (list->b_x == 1) ? (list->angle_x + 1) : list->angle_x;
 	list->angle_y = (list->b_y == 1) ? (list->angle_y + 1) : list->angle_y;
 	list->angle_z = (list->b_z == 1) ? (list->angle_z + 1) : list->angle_z;
-	while (i++ < list->xmax * list->ymax)
+	while (i < list->xmax * list->ymax)
 	{
-		list->color = ((list->tmp + i)->y >= 0) ? 0x00BFFF : 0xDB1702;
-		list->color = ((list->tmp + i)->y == 0 && (list->tmp +
-		(i - (int)(list->xmax)))->y == 0) ? 0xFFFFFF : list->color;
 		ft_matrice(list, i, 1, 0);
 		ft_mid_zoom_ptp(list, i, 1);
 		ft_matrice(list, i, 0, 1);
 		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
-		ft_call_bresenham(list , i, list->color);
+		ft_call_bresenham(list, i, 0xFFFFFF);
+		i++;
 	}
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
 	while (--i >= 0)
-		ft_call_bresenham(list , i, 0x00000);
+		ft_call_bresenham(list, i, 0x00000);
 	return (0);
 }
 
@@ -191,6 +226,8 @@ int		ft_draw_pix(t_env *list)
 	list->angle_x = 15;
 	list->angle_y = 25;
 	list->angle_z = 0;
+	list->center_x = -1;
+	list->center_y = -1;
 	list->mlx = mlx_init();
 	list->win = mlx_new_window(list->mlx, WIDTH, HEIGHT, "mlx_42");
 	list->img_ptr = mlx_new_image(list->mlx, WIDTH, HEIGHT);
@@ -198,12 +235,13 @@ int		ft_draw_pix(t_env *list)
 	&list->size_line, &list->endian);
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
 	mlx_key_hook(list->win, ft_key_funct, list);
+	mlx_mouse_hook(list->win, ft_mouse_funct, list);
 	mlx_loop_hook(list->mlx, ft_fill_image, list);
 	mlx_loop(list->mlx);
 	return (0);
 }
 
-char		*ft_strmydup(char const *s1, char c)
+char	*ft_strmydup(char const *s1, char c)
 {
 	char	*s2;
 	size_t	i;
@@ -226,7 +264,7 @@ char		*ft_strmydup(char const *s1, char c)
 	return (s2);
 }
 
-char			*ft_mysplit(char *s, char c, int nbword)
+char	*ft_mysplit(char *s, char c, int nbword)
 {
 	int		z;
 	int		j;
@@ -247,13 +285,8 @@ char			*ft_mysplit(char *s, char c, int nbword)
 	return (ft_strmydup(s + z, c));
 }
 
-void	ft_location(t_env *list, int i)
+void	ft_location(t_env *list, int i, int x, int y)
 {
-	int		y;
-	int		x;
-	char	*str;
-
-	y = 0;
 	if (!(list->p = (t_point*)malloc(sizeof(t_point)
 	* (list->ymax * list->xmax))))
 		return ;
@@ -268,11 +301,11 @@ void	ft_location(t_env *list, int i)
 		x = 0;
 		while (x < list->xmax)
 		{
-			str = ft_mysplit(list->line, ' ', x + 1);
+			list->str = ft_mysplit(list->line, ' ', x + 1);
 			(list->p + i)->z = y;
 			(list->p + i)->x = x;
-			(list->p + i)->y = -ft_atoi(str);
-			free(str);
+			(list->p + i)->y = -ft_atoi(list->str);
+			free(list->str);
 			x++;
 			i++;
 		}
@@ -308,7 +341,6 @@ void	ft_get_pix(char *filename, t_env *list)
 		while (get_next_line(list->fd, &list->line))
 		{
 			list->xmax = ft_verif_x(ft_count_x(list->line, ' '), list->xmax);
-			printf("XMAX = %f et YMAX = %f \n", list->xmax, list->ymax);
 			free(list->line);
 			list->ymax++;
 		}
@@ -316,7 +348,7 @@ void	ft_get_pix(char *filename, t_env *list)
 		{
 			if ((list->fd = open(filename, O_RDONLY)))
 			{
-				ft_location(list, 0);
+				ft_location(list, 0, 0, 0);
 				if (close(list->fd) == -1)
 					ft_error(4, 0);
 			}
