@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/31 00:42:06 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/01/31 23:13:45 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ int		ft_key_funct(int keycode, t_env *list)
 	list->b_y = (keycode == 119) ? 0 : list->b_y;
 	list->b_z = (keycode == 116) ? 1 : list->b_z;
 	list->b_z = (keycode == 121) ? 0 : list->b_z;
+	list->rainbow = (keycode == 15) ? 1 : list->rainbow;
+	list->rainbow = (keycode == 17) ? 0 : list->rainbow;
 	return (0);
 }
 
@@ -179,13 +181,36 @@ int		ft_mouse_funct(int button, int x, int y, t_env *list)
 		list->center_x = -1;
 		list->center_y = -1;
 		list->zoom = 1;
+		list->rainbow = 0;
 	}
 	return (0);
 }
 
-void	ft_call_bresenham(t_env *list, int i, int color)
+void	ft_call_bresenham(t_env *list, int i, int color, int v)
 {
-	list->color = color;
+	int		tmp;
+	int		j;
+	int		a;
+
+	if (v == 1 && list->rainbow == 1)
+	{
+		tmp = i / list->xmax;
+		if (list->nblR == 0)
+			list->color = *(list->R + tmp);
+		else
+		{
+			j = tmp / list->nblR;
+			if (list->modR == 0)
+				list->color = *(list->R + j);
+			else
+			{
+				list->color = (j < list->modR && (((i - 1) / list->xmax) /
+				list->nblR) < j && j > 0) ? *(list->R + j - 1) : *(list->R + j - 1);
+			}
+		}
+	}
+	else
+		list->color = color;
 	if (i == 0)
 		ft_pixel_put_image(list, (list->h + i)->x,
 		(list->h + i)->y + (list->h + i)->z + 0.5);
@@ -211,13 +236,28 @@ int		ft_fill_image(t_env *list)
 		ft_matrice(list, i, 0, 1);
 		ft_mid_zoom_ptp(list, i, 2);
 		ft_matrice(list, i, 0, 0);
-		ft_call_bresenham(list, i, 0xFFFFFF);
+		ft_call_bresenham(list, i, 0xFFFFFF, 1);
 		i++;
 	}
 	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
 	while (--i >= 0)
-		ft_call_bresenham(list, i, 0x00000);
+		ft_call_bresenham(list, i, 0x00000, 2);
 	return (0);
+}
+
+void	ft_initrainbow(t_env *list)
+{
+	list->rainbow = 0;
+	if (!(list->R = (int*)malloc(sizeof(int) * 6)))
+		exit(EXIT_FAILURE);
+	*(list->R) = 0xffffff;
+	*(list->R + 1) = 0xffa500;
+	*(list->R + 2) = 0xf4f400;
+	*(list->R + 3) = 0x00f400;
+	*(list->R + 4) = 0x0028f4;
+	*(list->R + 5) = 0xa300f4;
+	list->nblR = (int)(list->ymax) / 7;
+	list->modR = (int)(list->ymax) % 7;
 }
 
 int		ft_draw_pix(t_env *list)
@@ -228,6 +268,7 @@ int		ft_draw_pix(t_env *list)
 	list->angle_z = 0;
 	list->center_x = -1;
 	list->center_y = -1;
+	ft_initrainbow(list);
 	list->mlx = mlx_init();
 	list->win = mlx_new_window(list->mlx, WIDTH, HEIGHT, "mlx_42");
 	list->img_ptr = mlx_new_image(list->mlx, WIDTH, HEIGHT);
