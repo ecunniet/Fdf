@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/18 19:29:10 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/31 23:13:45 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/02/01 23:28:50 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,24 +188,51 @@ int		ft_mouse_funct(int button, int x, int y, t_env *list)
 
 void	ft_call_bresenham(t_env *list, int i, int color, int v)
 {
-	int		tmp;
-	int		j;
-	int		a;
-
+	int			tmp;
+	int			j;
+	int			a;
+	
 	if (v == 1 && list->rainbow == 1)
 	{
-		tmp = i / list->xmax;
+		tmp = i / list->xmax; // ligne actuelle sur y
+		ft_putstr("tmp = ");
+		ft_putnbr(tmp);
+		ft_putchar('\n');
 		if (list->nblR == 0)
 			list->color = *(list->R + tmp);
 		else
 		{
-			j = tmp / list->nblR;
+			ft_putstr("i = ");
+			ft_putnbr(i);
+			ft_putchar('\n');
+			j = tmp / list->nblR; //numero de la couleur
+			ft_putstr("jless = ");
+			ft_putnbr(list->jless);
+			ft_putchar('\n');
+			ft_putstr("j before = ");
+			ft_putnbr(j);
+			ft_putchar('\n');
 			if (list->modR == 0)
 				list->color = *(list->R + j);
 			else
 			{
-				list->color = (j < list->modR && (((i - 1) / list->xmax) /
-				list->nblR) < j && j > 0) ? *(list->R + j - 1) : *(list->R + j - 1);
+			ft_putstr("couleur precedente = ");
+			ft_putnbr(((i - 1) / list->xmax) / list->nblR);
+			ft_putchar('\n');
+			j = ((j < list->modR /*nb couleur < o + 1*/ && list->jless
+			/*precedement une autre couleur*/ < j)) ? j - 1 : j;
+			j = (j == -1) ? 0 : j;
+			j = (j == 6) ? 5 : j;
+			j = (list->jless + 1 > j) ? j - 1 : j;
+			list->jless = (list->jless + 1 >= j) ? j - 1 : j;
+			list->jless = (j == 0) ? -1 : list->jless;
+			ft_putstr("jless after = ");
+			ft_putnbr(list->jless);
+			ft_putchar('\n');
+			ft_putstr("j after = ");
+			ft_putnbr(j);
+			ft_putchar('\n');
+			list->color = *(list->R + j);
 			}
 		}
 	}
@@ -250,14 +277,24 @@ void	ft_initrainbow(t_env *list)
 	list->rainbow = 0;
 	if (!(list->R = (int*)malloc(sizeof(int) * 6)))
 		exit(EXIT_FAILURE);
-	*(list->R) = 0xffffff;
+	*(list->R) = 0xf40000;
 	*(list->R + 1) = 0xffa500;
 	*(list->R + 2) = 0xf4f400;
 	*(list->R + 3) = 0x00f400;
 	*(list->R + 4) = 0x0028f4;
 	*(list->R + 5) = 0xa300f4;
-	list->nblR = (int)(list->ymax) / 7;
-	list->modR = (int)(list->ymax) % 7;
+	ft_putstr("list->ymax = ");
+	ft_putnbr(list->ymax);
+	ft_putchar('\n');
+	list->nblR = (int)(list->ymax) / 6; // nb de ligne par couleur
+	ft_putstr("nblR = ");
+	ft_putnbr(list->nblR);
+	ft_putchar('\n');
+	list->modR = (int)(list->ymax) % 6; // nb de ligne a se partager
+	list->jless = -1;
+	ft_putstr("modR = ");
+	ft_putnbr(list->modR);
+	ft_putchar('\n');
 }
 
 int		ft_draw_pix(t_env *list)
