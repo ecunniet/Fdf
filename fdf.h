@@ -6,7 +6,7 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/02/01 23:00:59 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/02/02 21:56:07 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef struct		s_env
 	int				nblR;
 	int				modR;
 	int				*R;
-	int				jless;
 }					t_env;
 
 typedef	struct		s_line
