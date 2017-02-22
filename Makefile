@@ -6,45 +6,45 @@
 #    By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/13 16:43:23 by ecunniet          #+#    #+#              #
-#    Updated: 2016/12/13 16:43:29 by ecunniet         ###   ########.fr        #
+#    Updated: 2017/02/05 22:05:55 by ecunniet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fdf
-LIBPATH = libft
-LIBNAME = libft.a
-LIB = $(LIBNAME:%=$(LIBPATH)/%)
-CFLAGS = -Wall -Werror -Wextra -I$(LIBPATH)/includes
-LDFLAGS = -L $(LIBPATH) -l$(LIBNAME:lib%.a=%)
+CFLAGS = -Wall -Wextra -Werror -lmlx -framework OpenGL -framework AppKit
+INC = -I includes/
+POINTH = includes/get_next_line.h \
+		 includes/fdf.h \
+		 includes/libft.h
+LIB = libft/libft.a
 CC = gcc
-SRC	= ft_error.c Fdf.c
-INC = fdf.h
+SRC	= ft_error.c main.c ft_bresenham.c \
+	  ft_matrice.c ft_parser.c
 OBJ	= $(SRC:%.c=%.o)
 
 all: $(NAME) 
 
-$(LIB):
-	$(MAKE) -C $(LIBPATH)
-
-$(NAME): $(OBJ) $(LIB)
-	$(CC) -o $@ $(LDFLAGS) $(OBJ)
+$(NAME):
+	$(MAKE) -C libft/
+	$(CC) -c $(SRC) $(INC)
+	$(CC) $(CFLAGS) $(OBJ) $(INC) $(LIB) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) -c $<
 
 clean:
 	rm -f $(OBJ)
-	$(MAKE) clean -C $(LIBPATH)
+	$(MAKE) clean -C libft/
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) fclean -C $(LIBPATH)
+	$(MAKE) fclean -C libft/
 
 re: fclean
 	$(MAKE) all
 
 norme:
-	@norminette $(SRC) $(INC)
-	@$(MAKE) norme -C $(LIBPATH)
+	@norminette $(SRC) $(POINTH)
+	@$(MAKE) norme -C libft/
 
 .PHONY: all clean fclean re norme

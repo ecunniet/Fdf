@@ -6,17 +6,17 @@
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 18:16:57 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/02/02 21:56:07 by ecunniet         ###   ########.fr       */
+/*   Updated: 2017/02/05 22:24:00 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
-# include "libft/libft.h"
-# include "minilibx/mlx.h"
-
-int					ft_verif_x(int xmax_new, int xmax_old);
-void				ft_error(int i, char *str);
+# include "libft.h"
+# include "mlx.h"
+# include <math.h>
+# define WIDTH 1500
+# define HEIGHT 1000
 
 typedef struct		s_point
 {
@@ -29,7 +29,7 @@ typedef	struct		s_pixel
 {
 	double			x;
 	double			y;
-	double 			z;
+	double			z;
 }					t_pixel;
 
 typedef struct		s_env
@@ -62,9 +62,9 @@ typedef struct		s_env
 	int				b_z;
 	char			*str;
 	int				rainbow;
-	int				nblR;
-	int				modR;
-	int				*R;
+	int				nblr;
+	int				modr;
+	int				r[6];
 }					t_env;
 
 typedef	struct		s_line
@@ -80,5 +80,15 @@ typedef	struct		s_line
 	int				yinc;
 	int				i;
 }					t_line;
+
+void				ft_free_struct(t_env *list);
+int					ft_key_funct(int keycode, t_env *list);
+int					ft_mouse_funct(int button, int x, int y, t_env *list);
+void				ft_call_bresenham(t_env *list, int i, int color, int v);
+int					ft_fill_image(t_env *list);
+int					ft_draw_pix(t_env *list);
+void				ft_get_pix(char *filename, t_env *list);
+int					ft_verif_x(int xmax_new, int xmax_old);
+void				ft_error(int i, char *str);
 
 #endif

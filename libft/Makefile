@@ -6,7 +6,7 @@
 #    By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/04 12:32:58 by ecunniet          #+#    #+#              #
-#    Updated: 2016/12/19 21:43:25 by ecunniet         ###   ########.fr        #
+#    Updated: 2017/02/05 18:56:47 by ecunniet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,18 +34,20 @@ SRC = ft_memset.c ft_bzero.c ft_memcpy.c \
 	  ft_putnbr_fd.c ft_lstnew.c ft_lstdelone.c \
 	  ft_lstdel.c ft_lstadd.c ft_lstiter.c \
 	  ft_lstmap.c ft_isspace.c ft_lstaddend.c \
-	  ft_strjoin_free.c get_next_line.c ft_ptrchardel.c
+	  ft_strjoin_free.c get_next_line.c
 
 OBJ = $(SRC:.c=.o)
 
 INC = -I .
 
+POINTH = get_next_line.h libft.h
+
 all: $(NAME)
 
 $(NAME):
-	gcc $(FLAGS) -c $(SRC) $(INC)
-	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
+	@gcc $(FLAGS) -c $(SRC) $(INC)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 clean:
 	rm -rf $(OBJ)
@@ -56,4 +58,7 @@ fclean: clean
 re:	fclean
 	$(MAKE) all
 
-.PHONY = all clean fclean re
+norme:
+	@norminette $(SRC) $(POINTH)
+
+.PHONY = all clean fclean re norme

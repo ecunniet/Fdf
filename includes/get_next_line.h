@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ptrchardel.c                                    :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/19 21:38:31 by ecunniet          #+#    #+#             */
-/*   Updated: 2016/12/19 21:44:40 by ecunniet         ###   ########.fr       */
+/*   Created: 2016/11/27 21:52:25 by ecunniet          #+#    #+#             */
+/*   Updated: 2016/12/12 19:24:24 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+# include <sys/types.h>
+# include <sys/uio.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdlib.h>
+# include "libft.h"
+# define BUFF_SIZE 32
 
-void	ft_ptrchardel(char ***ptr, int size)
-{
-	int i;
+int get_next_line(const int fd, char **line);
 
-	i = 0;
-	while (i < size)
-	{
-		free((*ptr)[i]);
-		i++;
-	}
-	free(*ptr);
-	ptr = NULL;
-}
+#endif

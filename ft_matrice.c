@@ -5,91 +5,124 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecunniet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/15 22:16:39 by ecunniet          #+#    #+#             */
-/*   Updated: 2017/01/16 18:45:12 by ecunniet         ###   ########.fr       */
+/*   Created: 2017/02/05 21:38:38 by ecunniet          #+#    #+#             */
+/*   Updated: 2017/02/05 22:26:07 by ecunniet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
-#include "minilibx/mlx.h"
-#include <stdio.h>
+#include "fdf.h"
 
-typedef	struct	s_add
+static void	ft_matrice(t_env *list, int i, int x, int y)
 {
-	char	*adi;
-	int		numpix;
+	int		z;
 	double	angle;
-}				t_add;
 
-void	ft_light_pixel(t_add *e)
-{
-	*(e->adi + e->numpix * 4) = 255;
-	*(e->adi + 1 + e->numpix * 4) = 255;
-	*(e->adi + 2 + e->numpix * 4) = 255;
+	z = (x == 0 && y == 0) ? 1 : 0;
+	angle = (x == 1) ? (list->angle_x * (M_PI / 180)) : -1;
+	angle = (y == 1 && angle == -1) ? (list->angle_y * (M_PI / 180)) : angle;
+	angle = (z == 1 && angle == -1) ? (list->angle_z * (M_PI / 180)) : angle;
+	(list->h + i)->x = ((list->tmp + i)->x * ((x * x) + (1 - (x * x)) *
+	cos(angle))) + ((list->tmp + i)->y * (x * y * (1 - cos(angle)) - z *
+	sin(angle))) + ((list->tmp + i)->z * (x * z * (1 - cos(angle)) + y *
+	sin(angle)));
+	(list->h + i)->y = ((list->tmp + i)->x * (x * y * (1 - cos(angle)) + z *
+	sin(angle))) + ((list->tmp + i)->y * ((y * y) + (1 - (y * y)) *
+	cos(angle))) + ((list->tmp + i)->z * (y * z * (1 - cos(angle)) - x *
+	sin(angle)));
+	(list->h + i)->z = ((list->tmp + i)->x * (x * z * (1 - cos(angle)) - y *
+	sin(angle))) + ((list->tmp + i)->y * (y * z * (1 - cos(angle)) + x *
+	sin(angle))) + ((list->tmp + i)->z * ((z * z) + (1 - (z * z)) *
+	cos(angle)));
 }
 
-void	ft_matrice(double x, double y, double z, t_add *e)
+static void	ft_mid_zoom_ptp(t_env *list, int i, int code)
 {
-	double xi;
-	double yi;
-	double zi;
-
-	x = 1*x + 0.5;
-	y = (y*cos(e->angle * (M_PI / 180))) - (z*sin(e->angle * (M_PI / 180))) + 0.5;
-	z = (y*sin(e->angle * (M_PI / 180))) + (z*cos(e->angle * (M_PI / 180))) + 0.5;
-	/*
-	x = (x*cos(e->angle * (M_PI / 180))) + (z*sin(e->angle * (M_PI / 180))) + 0.5;
-	y = 1*y + 0.5;
-	z = -(x*sin(e->angle * (M_PI / 180))) + (z*cos(e->angle * (M_PI / 180))) + 0.5;
-	*/
-	e->numpix = (int)x + (((int)y  + 0.2 * (int)z) * 100);
-	ft_light_pixel(e);
-}
-
-int		ft_key_funct(int keycode, t_add *e)
-{
-	printf("keycode event %d\n", keycode);
-	if (keycode == 123)
+	if (code == 0)
+		while (i < list->xmax * list->ymax)
+		{
+			(list->tmp + i)->x = ((list->p + i)->x - list->xmax / 2)
+			* 10 * list->zoom;
+			(list->tmp + i)->y = (list->p + i)->y * list->zoom;
+			(list->tmp + i)->z = ((list->p + i)->z - list->ymax / 2)
+			* 10 * list->zoom;
+			i++;
+		}
+	else
 	{
-		e->angle += 5;
-		ft_matrice(10, 10, 10, e);
+		(list->tmp + i)->x = (list->h + i)->x;
+		(list->tmp + i)->y = (list->h + i)->y;
+		(list->tmp + i)->z = (list->h + i)->z;
 	}
-	if (keycode == 124)
+}
+
+int			ft_key_funct(int keycode, t_env *list)
+{
+	list->angle_x = (keycode == 123) ? (list->angle_x - 1) : list->angle_x;
+	list->angle_x = (keycode == 124) ? (list->angle_x + 1) : list->angle_x;
+	list->angle_y = (keycode == 126) ? (list->angle_y - 1) : list->angle_y;
+	list->angle_y = (keycode == 125) ? (list->angle_y + 1) : list->angle_y;
+	list->angle_z = (keycode == 69) ? (list->angle_z - 1) : list->angle_z;
+	list->angle_z = (keycode == 78) ? (list->angle_z + 1) : list->angle_z;
+	list->zoom = (keycode == 67) ? (list->zoom + 0.2) : list->zoom;
+	list->zoom = (keycode == 75 && list->zoom > 0.3) ? (list->zoom - 0.2)
+	: list->zoom;
+	if (keycode == 53)
+		ft_free_struct(list);
+	list->b_x = (keycode == 279) ? 1 : list->b_x;
+	list->b_x = (keycode == 117) ? 0 : list->b_x;
+	list->b_y = (keycode == 115) ? 1 : list->b_y;
+	list->b_y = (keycode == 119) ? 0 : list->b_y;
+	list->b_z = (keycode == 116) ? 1 : list->b_z;
+	list->b_z = (keycode == 121) ? 0 : list->b_z;
+	list->rainbow = (keycode == 15) ? 1 : list->rainbow;
+	list->rainbow = (keycode == 17) ? 0 : list->rainbow;
+	return (0);
+}
+
+int			ft_mouse_funct(int button, int x, int y, t_env *list)
+{
+	if (button == 1)
 	{
-		e->angle -= 5;
-		ft_matrice(10, 10, 10, e);
+		list->center_x = x;
+		list->center_y = y;
+	}
+	if (button == 2)
+	{
+		list->b_x = 0;
+		list->b_y = 0;
+		list->b_z = 0;
+		list->angle_x = 15;
+		list->angle_y = 25;
+		list->angle_z = 0;
+		list->center_x = -1;
+		list->center_y = -1;
+		list->zoom = 1;
+		list->rainbow = 0;
 	}
 	return (0);
 }
 
-int		ft_draw_pix()
+int			ft_fill_image(t_env *list)
 {
-	void			*mlx;
-	void			*win;
-	void			*img_ptr;
-	int				width;
-	int				height;
-	int				bpp;
-	int				size_line;
-	int				endian;
-	t_add			e;
+	int		i;
 
-	width = 400;
-	height = 400;
-	mlx = mlx_init();
-	win = mlx_new_window(mlx, 500, 500, "mlx_42");
-	img_ptr = mlx_new_image(mlx, width, height);
-	e.adi = mlx_get_data_addr(img_ptr, &bpp, &size_line, &endian);
-	e.angle = 45.00000;
-	ft_matrice(10, 10, 10, &e);
-	mlx_put_image_to_window(mlx, win, img_ptr, 50, 50);
-	mlx_key_hook(win, ft_key_funct, &e);
-	mlx_loop(mlx);
-	return (0);
-}
-
-int main(void)
-{
-	ft_draw_pix();
+	ft_mid_zoom_ptp(list, 0, 0);
+	i = 0;
+	list->angle_x = (list->b_x == 1) ? (list->angle_x + 1) : list->angle_x;
+	list->angle_y = (list->b_y == 1) ? (list->angle_y + 1) : list->angle_y;
+	list->angle_z = (list->b_z == 1) ? (list->angle_z + 1) : list->angle_z;
+	while (i < list->xmax * list->ymax)
+	{
+		ft_matrice(list, i, 1, 0);
+		ft_mid_zoom_ptp(list, i, 1);
+		ft_matrice(list, i, 0, 1);
+		ft_mid_zoom_ptp(list, i, 2);
+		ft_matrice(list, i, 0, 0);
+		ft_call_bresenham(list, i, 0xFFFFFF, 1);
+		i++;
+	}
+	mlx_put_image_to_window(list->mlx, list->win, list->img_ptr, 0, 0);
+	while (--i >= 0)
+		ft_call_bresenham(list, i, 0x00000, 2);
 	return (0);
 }
