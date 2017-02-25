@@ -61,19 +61,19 @@ int			ft_key_funct(int keycode, t_env *list)
 	list->angle_x = (keycode == 124) ? (list->angle_x + 1) : list->angle_x;
 	list->angle_y = (keycode == 126) ? (list->angle_y - 1) : list->angle_y;
 	list->angle_y = (keycode == 125) ? (list->angle_y + 1) : list->angle_y;
-	list->angle_z = (keycode == 69) ? (list->angle_z - 1) : list->angle_z;
-	list->angle_z = (keycode == 78) ? (list->angle_z + 1) : list->angle_z;
-	list->zoom = (keycode == 67) ? (list->zoom + 0.2) : list->zoom;
-	list->zoom = (keycode == 75 && list->zoom > 0.3) ? (list->zoom - 0.2)
+	list->angle_z = (keycode == 258) ? (list->angle_z - 1) : list->angle_z;
+	list->angle_z = (keycode == 44) ? (list->angle_z + 1) : list->angle_z;
+	list->zoom = (keycode == 24) ? (list->zoom + 0.2) : list->zoom;
+	list->zoom = (keycode == 27 && list->zoom > 0.3) ? (list->zoom - 0.2)
 	: list->zoom;
 	if (keycode == 53)
 		ft_free_struct(list);
-	list->b_x = (keycode == 279) ? 1 : list->b_x;
-	list->b_x = (keycode == 117) ? 0 : list->b_x;
-	list->b_y = (keycode == 115) ? 1 : list->b_y;
-	list->b_y = (keycode == 119) ? 0 : list->b_y;
-	list->b_z = (keycode == 116) ? 1 : list->b_z;
-	list->b_z = (keycode == 121) ? 0 : list->b_z;
+	list->b_x = (keycode == 18) ? 1 : list->b_x;
+	list->b_x = (keycode == 21) ? 0 : list->b_x;
+	list->b_y = (keycode == 19) ? 1 : list->b_y;
+	list->b_y = (keycode == 23) ? 0 : list->b_y;
+	list->b_z = (keycode == 20) ? 1 : list->b_z;
+	list->b_z = (keycode == 22) ? 0 : list->b_z;
 	list->rainbow = (keycode == 15) ? 1 : list->rainbow;
 	list->rainbow = (keycode == 17) ? 0 : list->rainbow;
 	return (0);

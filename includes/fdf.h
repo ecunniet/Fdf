@@ -15,8 +15,8 @@
 # include "libft.h"
 # include "mlx.h"
 # include <math.h>
-# define WIDTH 1500
-# define HEIGHT 1000
+# define WIDTH 1000
+# define HEIGHT 600
 
 typedef struct		s_point
 {

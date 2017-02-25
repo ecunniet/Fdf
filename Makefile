@@ -17,17 +17,18 @@ POINTH = includes/get_next_line.h \
 		 includes/fdf.h \
 		 includes/libft.h
 LIB = libft/libft.a
+MLX = -L minilibx_macos/
 CC = gcc
-SRC	= ft_error.c main.c ft_bresenham.c \
+SRC = ft_error.c main.c ft_bresenham.c \
 	  ft_matrice.c ft_parser.c
-OBJ	= $(SRC:%.c=%.o)
+OBJ= $(SRC:%.c=%.o)
 
 all: $(NAME) 
 
 $(NAME):
 	$(MAKE) -C libft/
 	$(CC) -c $(SRC) $(INC)
-	$(CC) $(CFLAGS) $(OBJ) $(INC) $(LIB) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(INC) $(LIB) $(MLX) -o $(NAME)
 
 %.o: %.c
 	$(CC) -c $<
